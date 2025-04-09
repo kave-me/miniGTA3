@@ -13,7 +13,7 @@
   <img src="./readme/intro-screen.svg" alt="MiniGTA3 Intro Screen" width="800">
 </p>
 
-MiniGTA3 is an experimental project by Vibe Coding that leverages Clause-3.7. It offers third-person gameplay, drivable vehicles, and an open-world experience, all developed using TypeScript and Three.js.
+MiniGTA3 is an experimental Vibe Coding project that leverages claude 3.7 sonnet. It offers third-person gameplay, drivable vehicles, and an open-world experience, all developed using TypeScript and Three.js.
 
 ## 🎮 Features
 
