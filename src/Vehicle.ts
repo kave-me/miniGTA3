@@ -35,7 +35,6 @@ export class Vehicle {
   private suspensionStiffness = 12.0; // Increased from 10.0
   private suspensionDamping = 0.9; // Increased from 0.8
   private suspensionTravel = 0.25; // Increased from 0.2
-  private wheelBase = 2.5; // Distance between front and rear axles
   private _hasCollidedRecently = false;
   private collisionCooldown = 0;
   
@@ -47,6 +46,20 @@ export class Vehicle {
   
   // Collision properties
   private collider: THREE.Box3 = new THREE.Box3();
+
+  // Getter and setter for collision state
+  public get hasCollidedRecently(): boolean {
+    return this._hasCollidedRecently;
+  }
+  
+  private set hasCollidedRecently(value: boolean) {
+    this._hasCollidedRecently = value;
+  }
+
+  // Getter for AI control state
+  public get isAIControlled(): boolean {
+    return this._isAIControlled;
+  }
   // Vehicle dimensions used for collision detection and visual representation
   private width = 2.0;
   private height = 1.5;
@@ -55,11 +68,12 @@ export class Vehicle {
   // State
   private _isOccupied = false;
   
-  /**
-   * Check if the vehicle is currently occupied
-   */
-  public isOccupied(): boolean {
+  public get isOccupied(): boolean {
     return this._isOccupied;
+  }
+  
+  public set isOccupied(value: boolean) {
+    this._isOccupied = value;
   }
   
   constructor(
@@ -188,7 +202,7 @@ export class Vehicle {
       this.vehicleModel.setPosition(this.position);
       
       // Update wheel rotation but skip other animations
-      this.vehicleModel.updateWheelsOnly(deltaTime, 0, this.currentSpeed);
+      this.vehicleModel.updateWheelsOnly(deltaTime, this.currentSpeed);
     }
     
     // Update collider with reduced frequency (every other frame)
@@ -274,12 +288,12 @@ export class Vehicle {
     if (this.collisionCooldown > 0) {
       this.collisionCooldown -= deltaTime;
       if (this.collisionCooldown <= 0) {
-        this.hasCollidedRecently = false;
+        this._hasCollidedRecently = false;
       }
     }
     
     // Handle AI-controlled vehicles differently
-    if (this.isAIControlled) {
+    if (this._isAIControlled) {
       this.applyAIPhysics(deltaTime);
       return;
     }
@@ -470,7 +484,7 @@ export class Vehicle {
     
     // Update collision state
     if (hasCollided) {
-      this.hasCollidedRecently = true;
+      this._hasCollidedRecently = true;
       this.collisionCooldown = 1.0; // 1 second cooldown
     }
   }
@@ -515,7 +529,7 @@ export class Vehicle {
    * Set whether this vehicle is AI controlled
    */
   public setAIControlled(isAI: boolean): void {
-    this.isAIControlled = isAI;
+    this._isAIControlled = isAI;
   }
   
   /**
@@ -537,13 +551,6 @@ export class Vehicle {
    */
   public setAITargetSpeed(speed: number): void {
     this.aiTargetSpeed = speed;
-  }
-  
-  /**
-   * Check if this vehicle is AI controlled
-   */
-  public isAIControlled(): boolean {
-    return this._isAIControlled;
   }
   
   // Getters and setters
@@ -571,10 +578,5 @@ export class Vehicle {
     return this.currentSpeed;
   }
   
-  /**
-   * Check if the vehicle has collided recently
-   */
-  public hasCollidedRecently(): boolean {
-    return this._hasCollidedRecently;
-  }
+
 }

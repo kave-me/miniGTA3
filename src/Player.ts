@@ -19,8 +19,8 @@ export class Player {
   private jumpCooldown = 0.5; // seconds
   private lastJumpTime = 0;
   private isOnGround = false;
-  private isMoving = false;
   private isRunning = false;
+  private _hasCollidedRecently = false;
   
   // Vehicle interaction
   private currentVehicle: Vehicle | null = null;
@@ -28,6 +28,19 @@ export class Player {
   private isEnteringVehicle = false;
   private isExitingVehicle = false;
   private nearbyVehicles: Vehicle[] = [];
+  
+  // Getter for collision state
+  public hasCollidedRecently(): boolean {
+    return this._hasCollidedRecently;
+  }
+  
+  // Method to set position (used by missions)
+  public setPosition(position: THREE.Vector3): void {
+    this.position.copy(position);
+    if (this.humanModel) {
+      this.humanModel.setPosition(this.position);
+    }
+  }
   
   // Collision properties
   private collider: THREE.Box3;
@@ -137,7 +150,6 @@ export class Player {
     // Normalize movement direction if moving diagonally
     if (moveDirection.length() > 0) {
       moveDirection.normalize();
-      this.isMoving = true;
       
       // Check if running (could be enhanced with shift key for sprint)
       this.isRunning = moveDirection.z < 0 && moveDirection.length() > 0.8;
@@ -149,7 +161,6 @@ export class Player {
         this.humanModel.playAnimation(HumanAnimationState.WALK);
       }
     } else {
-      this.isMoving = false;
       this.isRunning = false;
       this.humanModel.playAnimation(HumanAnimationState.IDLE);
     }
@@ -220,7 +231,6 @@ export class Player {
   // Vehicle interaction
   private lastInteractionTime = 0;
   private readonly INTERACTION_COOLDOWN: number = 100; // Reduced for even more responsive interaction
-  private readonly VEHICLE_INTERACTION_RANGE: number = 2.5; // Increased for easier vehicle entry
 
   private handleVehicleInteraction(): void {
     const currentTime = Date.now();
@@ -252,7 +262,7 @@ export class Player {
           let nearestDistance = Infinity;
           
           for (const vehicle of this.nearbyVehicles) {
-            if (!vehicle.isOccupied()) {
+            if (!vehicle.isOccupied) {
               const distance = this.position.distanceTo(vehicle.getPosition());
               if (distance < nearestDistance) {
                 nearestDistance = distance;
@@ -280,10 +290,6 @@ export class Player {
   }
 
   private updateNearbyVehicles(): void {
-    // Clear the current list
-    this.nearbyVehicles = [];
-    
-    // Get all vehicles from the scene without distance filtering
     const vehicles = this.scene.children
       .filter(child => child instanceof THREE.Group)
       .map(group => {
@@ -301,8 +307,17 @@ export class Player {
   // Visual feedback for vehicle interaction
   private interactionPrompt: HTMLDivElement | null = null;
 
+  private hideVehicleInteractionPrompt(): void {
+    if (this.interactionPrompt) {
+      document.body.removeChild(this.interactionPrompt);
+      this.interactionPrompt = null;
+    }
+  }
+
+  // Show vehicle interaction prompt when near a vehicle
+  // @ts-ignore
   private showVehicleInteractionPrompt(): void {
-    if (!this.interactionPrompt) {
+    if (!this.interactionPrompt && this.nearbyVehicles.length > 0) {
       this.interactionPrompt = document.createElement('div');
       this.interactionPrompt.className = 'vehicle-interaction-prompt';
       this.interactionPrompt.textContent = 'Press E to enter vehicle';
@@ -337,17 +352,13 @@ export class Player {
         document.head.appendChild(style);
       }
     }
-    this.interactionPrompt.style.display = 'block';
-  }
-
-  private hideVehicleInteractionPrompt(): void {
     if (this.interactionPrompt) {
-      this.interactionPrompt.style.display = 'none';
+      this.interactionPrompt.style.display = 'block';
     }
   }
   
   public enterVehicle(vehicle: Vehicle): void {
-    if (!this.isInVehicle && vehicle && !vehicle.isOccupied()) {
+    if (!this.isInVehicle && vehicle && !vehicle.isOccupied) {
       this.currentVehicle = vehicle;
       this.isInVehicle = true;
       vehicle.enterVehicle();

@@ -77,12 +77,13 @@ export class VehicleModel {
     // If GTA3 model loading failed, fall back to the asset loader
     if (!model) {
       const assetLoader = AssetLoader.getInstance();
-      model = assetLoader.getModel(modelId);
+      const loadedModel = assetLoader.getModel(modelId);
       
-      if (!model) {
+      if (!loadedModel) {
         console.error(`Failed to load vehicle model: ${modelId}`);
         return this.createFallbackModel();
       }
+      model = loadedModel;
     }
     
     this.model = model;
@@ -272,7 +273,7 @@ export class VehicleModel {
    * Simplified update method that only rotates wheels (for distant vehicles)
    * This is an optimization to reduce CPU usage for vehicles far from the player
    */
-  public updateWheelsOnly(deltaTime: number, steeringAngle = 0, speed = 0): void {
+  public updateWheelsOnly(deltaTime: number, speed = 0): void {
     // Only update wheel rotation based on speed - skip other animations
     if (this.wheels.length > 0 && Math.abs(speed) > 0.1) {
       const rotationAmount = speed * deltaTime * 2;

@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { Mission } from './Mission';
 import { Player } from '../Player';
 import { InputManager } from '../InputManager';
-import { HumanAnimationState } from '../models/HumanModel';
 
 /**
  * ChaseDownMission is a classic GTA3-style mission where the player

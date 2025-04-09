@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
           loadingScreen.style.display = 'none';
           
           // Show intro screen with branding
-          const introScreen = new IntroScreen(document.body, () => {
+          new IntroScreen(document.body, () => {
             // Start game after intro completes
             game.start();
             console.log('Game started');

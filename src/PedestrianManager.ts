@@ -20,14 +20,6 @@ export class PedestrianManager {
   private timeSinceLastSpawn = 0;
   private spawnInterval = 2; // Time between spawn attempts in seconds
   
-  // Pedestrian density by area type
-  private densityMultipliers: Map<string, number> = new Map([
-    ['downtown', 1.0],   // Normal density
-    ['suburban', 0.6],    // Lower density
-    ['industrial', 0.4],  // Even lower density
-    ['rural', 0.2]        // Very low density
-  ]);
-  
   constructor(
     private scene: THREE.Scene,
     private environment: Environment

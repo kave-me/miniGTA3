@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { Player } from '../Player';
-import { Vehicle } from '../Vehicle';
 import { InputManager } from '../InputManager';
 import { Mission } from './Mission';
 import { TutorialMission } from './TutorialMission';
@@ -23,8 +22,6 @@ export class MissionManager {
   
   // Mission state
   private missionActive = false;
-  private missionCompleted = false;
-  private missionFailed = false;
   
   // Mission progress tracking
   private completedMissions: string[] = [];
@@ -132,8 +129,8 @@ export class MissionManager {
     // Start the mission
     this.currentMission = mission;
     this.missionActive = true;
-    this.missionCompleted = false;
-    this.missionFailed = false;
+    // Reset mission state
+    this.missionActive = true;
     
     // Initialize mission
     mission.initialize();
@@ -214,8 +211,8 @@ export class MissionManager {
     if (!this.missionActive || !this.currentMission) return;
     
     // Mark mission as completed
-    this.missionCompleted = true;
     this.missionActive = false;
+    this.completedMissions.push(this.currentMission.getId());
     
     // Add to completed missions if not already completed
     const missionId = this.currentMission.getId();
@@ -255,8 +252,8 @@ export class MissionManager {
     if (!this.missionActive || !this.currentMission) return;
     
     // Mark mission as failed
-    this.missionFailed = true;
     this.missionActive = false;
+    this.showMissionFailed(reason);
     
     // Stop timer if active
     this.stopTimer();

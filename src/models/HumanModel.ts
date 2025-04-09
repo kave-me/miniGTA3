@@ -51,12 +51,13 @@ export class HumanModel {
     // If GTA3 model loading failed, fall back to the asset loader
     if (!model) {
       const assetLoader = AssetLoader.getInstance();
-      model = assetLoader.getModel(modelId);
+      const loadedModel = assetLoader.getModel(modelId);
       
-      if (!model) {
+      if (!loadedModel) {
         console.error(`Failed to load human model: ${modelId}`);
         return this.createFallbackModel();
       }
+      model = loadedModel;
     }
     
     this.model = model;
@@ -154,7 +155,7 @@ export class HumanModel {
       else if (clip.name.includes('exit')) state = HumanAnimationState.EXIT_VEHICLE;
       else if (clip.name.includes('drive')) state = HumanAnimationState.DRIVING;
       
-      if (state) {
+      if (state && this.mixer) {
         const action = this.mixer.clipAction(clip);
         this.animations.set(state, action);
       }

@@ -7,9 +7,9 @@ import { InputManager } from '../InputManager';
  */
 export abstract class Mission {
   // Mission identification
-  protected id: string;
-  protected title: string;
-  protected description: string;
+  protected id: string = '';
+  protected title: string = '';
+  protected description: string = '';
   
   // Mission state
   protected isActive = false;

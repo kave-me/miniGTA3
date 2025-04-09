@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AssetLoader } from './AssetLoader';
 
 /**
@@ -11,6 +11,7 @@ export class GTA3AssetLoader {
   private assetLoader: AssetLoader;
   private gltfLoader: GLTFLoader;
   private textureLoader: THREE.TextureLoader;
+  // @ts-ignore
   private xmlParser: DOMParser;
   
   // Mapping from original GTA3 model names to converted model paths
@@ -137,30 +138,7 @@ export class GTA3AssetLoader {
     return null;
   }
 
-  private async loadFallbackModel(modelName: string): Promise<THREE.Group | null> {
-    const fallbackName = this.mapToFallbackModel(modelName);
-    
-    // Try to load from the generic models directory first
-    try {
-      const genericPath = `/assets/models/${fallbackName}.glb`;
-      const gltf = await this.loadGLTF(genericPath);
-      if (gltf && gltf.scene) {
-        this.modelCache.set(modelName, gltf.scene);
-        return gltf.scene.clone();
-      }
-    } catch (error) {
-      console.warn(`Failed to load generic model ${fallbackName}, trying base AssetLoader`);
-    }
-    
-    // If generic model fails, try the base AssetLoader
-    const fallbackModel = this.assetLoader.getModel(fallbackName);
-    if (fallbackModel) {
-      this.modelCache.set(modelName, fallbackModel);
-      return fallbackModel.clone();
-    }
-    
-    return null;
-  }
+
   
   /**
    * Load a texture from the original GTA3 game assets
@@ -198,92 +176,15 @@ export class GTA3AssetLoader {
   /**
    * Parse XML model format and convert to THREE.Group
    */
-  private parseXMLModel(xmlContent: string): THREE.Group {
-    const group = new THREE.Group();
-    const doc = this.xmlParser.parseFromString(xmlContent, 'text/xml');
-    
-    // Parse mesh
-    const meshElement = doc.querySelector('mesh');
-    if (meshElement) {
-      const width = parseFloat(meshElement.getAttribute('width') || '1');
-      const height = parseFloat(meshElement.getAttribute('height') || '1');
-      const depth = parseFloat(meshElement.getAttribute('depth') || '1');
-      
-      const material = meshElement.querySelector('material');
-      const color = material ? material.getAttribute('color') || '#ffffff' : '#ffffff';
-      
-      const geometry = new THREE.BoxGeometry(width, height, depth);
-      const mesh = new THREE.Mesh(
-        geometry,
-        new THREE.MeshStandardMaterial({ color: color })
-      );
-      group.add(mesh);
-    }
-    
-    // Parse animations
-    const animations = doc.querySelectorAll('animation');
-    animations.forEach(anim => {
-      const name = anim.getAttribute('name') || 'animation';
-      const duration = parseFloat(anim.getAttribute('duration') || '1');
-      
-      const keyframes = Array.from(anim.querySelectorAll('keyframe'));
-      if (keyframes.length > 0) {
-        const times: number[] = [];
-        const positions: number[] = [];
-        const rotations: number[] = [];
-        
-        keyframes.forEach(keyframe => {
-          const time = parseFloat(keyframe.getAttribute('time') || '0');
-          times.push(time);
-          
-          const position = keyframe.getAttribute('position');
-          if (position) {
-            const [x, y, z] = position.split(' ').map(v => parseFloat(v));
-            positions.push(x, y, z);
-          }
-          
-          const rotation = keyframe.getAttribute('rotation');
-          if (rotation) {
-            const [x, y, z] = rotation.split(' ').map(v => parseFloat(v) * Math.PI / 180);
-            rotations.push(x, y, z);
-          }
-        });
-        
-        const tracks = [];
-        if (positions.length > 0) {
-          tracks.push(new THREE.KeyframeTrack(
-            '.position',
-            times,
-            positions
-          ));
-        }
-        if (rotations.length > 0) {
-          tracks.push(new THREE.KeyframeTrack(
-            '.rotation',
-            times,
-            rotations
-          ));
-        }
-        
-        if (tracks.length > 0) {
-          const clip = new THREE.AnimationClip(name, duration, tracks);
-          group.animations = [clip];
-        }
-      }
-    });
-    
-    return group;
-  }
+
   
-  private loadGLTF(path: string): Promise<THREE.GLTF> {
+  private loadGLTF(path: string): Promise<GLTF> {
     return new Promise((resolve, reject) => {
       this.gltfLoader.load(
         path,
         (gltf) => resolve(gltf),
-        (progress) => {
-          // Optional progress callback
-        },
-        (error) => reject(new Error(`Failed to load GLTF model: ${error.message}`))
+
+        (error: ProgressEvent) => reject(new Error(`Failed to load GLTF model: ${error}`))
       );
     });
   }
@@ -298,10 +199,8 @@ export class GTA3AssetLoader {
       this.textureLoader.load(
         path,
         (texture) => resolve(texture),
-        (progress) => {
-          // Optional progress callback
-        },
-        (error) => reject(new Error(`Failed to load texture: ${error.message}`))
+
+        (error: ProgressEvent) => reject(new Error(`Failed to load texture: ${error}`))
       );
     });
   }

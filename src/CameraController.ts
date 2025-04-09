@@ -42,7 +42,7 @@ export class CameraController {
     this.calculateTargetPosition(playerPosition, playerRotation);
     
     // Smoothly move camera to target position
-    this.smoothlyMoveCameraToTarget(0.1);
+    this.smoothlyMoveCameraToTarget();
     
     // Update camera look at position (slightly above player)
     this.lookAtPosition.copy(playerPosition).add(new THREE.Vector3(0, 1, 0));
@@ -76,7 +76,7 @@ export class CameraController {
     this.targetPosition.copy(playerPosition).add(offset);
   }
   
-  private smoothlyMoveCameraToTarget(deltaTime: number): void {
+  private smoothlyMoveCameraToTarget(): void {
     // Smoothly interpolate current camera position to target position
     this.camera.position.lerp(this.targetPosition, this.smoothFactor);
   }

@@ -89,7 +89,7 @@ export class VehicleManager {
   /**
    * Update all AI vehicles
    */
-  public update(deltaTime: number, player: Player, playerVehicles: Vehicle[]): void {
+  public update(deltaTime: number, player: Player): void {
     // Update spawn timer
     this.timeSinceLastSpawn += deltaTime;
     
@@ -122,7 +122,7 @@ export class VehicleManager {
         vehicle.updateSimple(deltaTime, 0.5);
       } else {
         // Nearby vehicles - full AI update
-        this.updateVehicleAI(vehicle, deltaTime, player, playerVehicles);
+        this.updateVehicleAI(vehicle, deltaTime);
       }
     }
   }
@@ -130,7 +130,7 @@ export class VehicleManager {
   /**
    * Update AI behavior for a vehicle
    */
-  private updateVehicleAI(vehicle: Vehicle, deltaTime: number, player: Player, playerVehicles: Vehicle[]): void {
+  private updateVehicleAI(vehicle: Vehicle, deltaTime: number): void {
     // Get current position and forward direction
     const position = vehicle.getPosition();
     const rotation = vehicle.getRotation();
@@ -203,15 +203,8 @@ export class VehicleManager {
    */
   private checkForObstacles(vehicle: Vehicle, direction: THREE.Vector3): number {
     const position = vehicle.getPosition();
-    const collider = vehicle.getCollider();
     
     // Cast a ray forward to detect obstacles
-    const rayCaster = new THREE.Raycaster(
-      position,
-      direction,
-      0,
-      20 // Max detection distance
-    );
     
     // Check for other vehicles
     for (const otherVehicle of this.vehicles) {
@@ -335,6 +328,7 @@ export class VehicleManager {
       const finalRotation = flipDirection ? rotation + Math.PI : rotation;
       
       // Create vehicle
+    //   @ts-ignore
       const vehicleType = this.selectRandomVehicleType();
       const vehicle = new Vehicle(this.scene, this.environment, position, finalRotation);
       
@@ -384,7 +378,6 @@ export class VehicleManager {
     const finalRotation = flipDirection ? rotation + Math.PI : rotation;
     
     // Create vehicle
-    const vehicleType = this.selectRandomVehicleType();
     const vehicle = new Vehicle(this.scene, this.environment, position, finalRotation);
     
     // Add to list

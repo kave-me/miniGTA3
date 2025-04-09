@@ -49,7 +49,7 @@ export class IntroScreen {
     }, 10000);
   }
   
-  private handleInput = (event: KeyboardEvent | MouseEvent) => {
+  private handleInput = (_event: KeyboardEvent | MouseEvent) => {
     // Prevent multiple triggers
     document.removeEventListener('keydown', this.handleInput);
     document.removeEventListener('click', this.handleInput);

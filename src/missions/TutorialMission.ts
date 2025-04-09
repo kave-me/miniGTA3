@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { Mission } from './Mission';
 import { Player } from '../Player';
 import { InputManager } from '../InputManager';
-import { HumanAnimationState } from '../models/HumanModel';
 
 /**
  * TutorialMission serves as the onboarding experience for new players
@@ -89,7 +88,7 @@ export class TutorialMission extends Mission {
   /**
    * Update the tutorial mission
    */
-  public update(deltaTime: number): void {
+  public update(_deltaTime: number): void {
     if (!this.isActive || this.isComplete || this.isFailed) return;
     
     // Check for step completion

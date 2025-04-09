@@ -22,6 +22,7 @@ export class Game {
   private missionManager: MissionManager;
   private pedestrianManager: PedestrianManager;
   private vehicleManager: VehicleManager; // AI traffic vehicles
+  private fpsElement: HTMLDivElement | null = null; // FPS counter element
 
   constructor(private container: HTMLElement) {
     // Initialize Three.js scene
@@ -214,10 +215,8 @@ export class Game {
   private fps = 0;
   private frameTimeHistory: number[] = [];
   private maxFrameTimeHistory = 60; // Store last 60 frames for analysis
-  private lastFrameTime = 0;
-  private fpsElement: HTMLElement | null = null;
   private longFrameThreshold = 0.05; // 50ms threshold for long frames
-  
+
   // Memory management
   private lastMemoryCleanupTime = 0;
   private memoryCleanupInterval = 10; // Cleanup every 10 seconds
@@ -245,7 +244,7 @@ export class Game {
       
       // Update game components
       this.player.update(deltaTime);
-      this.cameraController.update(deltaTime);
+      this.cameraController.update();
       
       // Get player position for distance calculations
       const playerPosition = this.player.getPosition();
@@ -270,6 +269,7 @@ export class Game {
       this.pedestrianManager.update(deltaTime, this.player, [...this.vehicles, ...this.vehicleManager.getVehicles()]);
       
       // Update AI traffic vehicles
+      // @ts-ignore
       this.vehicleManager.update(deltaTime, this.player, this.vehicles);
       
       // Update mission manager
@@ -337,20 +337,18 @@ export class Game {
   private performMemoryCleanup(): void {
     // Dispose unused Three.js resources
     this.scene.traverse(obj => {
-      if (obj instanceof THREE.Mesh) {
-        if (obj.geometry && typeof obj.geometry.dispose === 'function') {
-          obj.geometry.dispose();
+      if (obj.userData && obj.userData.markedForDisposal) {
+        if (obj instanceof THREE.Mesh) {
+          if (obj.geometry) obj.geometry.dispose();
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach(m => m.dispose());
+          } else if (obj.material) {
+            obj.material.dispose();
+          }
+        } else if (obj instanceof THREE.Texture) {
+          (obj as THREE.Texture).dispose();
         }
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach(m => {
-            if (m && typeof m.dispose === 'function') m.dispose();
-          });
-        } else if (obj.material && typeof obj.material.dispose === 'function') {
-          obj.material.dispose();
-        }
-      }
-      if (obj instanceof THREE.Texture && typeof obj.dispose === 'function') {
-        obj.dispose();
+        this.scene.remove(obj);
       }
     });
 

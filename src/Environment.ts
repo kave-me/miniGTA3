@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 export class Environment {
-  private ground: THREE.Mesh;
+  private ground!: THREE.Mesh; // Initialized in createGround()
   private buildings: THREE.Mesh[] = [];
   private obstacles: THREE.Box3[] = [];
   private groundHeight = 0;
@@ -77,8 +77,8 @@ export class Environment {
   
   private createRoads(): void {
     // Create a simple cross-shaped road
-    const roadWidth = 50;
     const roadLength = 1000;
+    const roadWidth = 50; // Width of the road
     
     // Road material
     const roadMaterial = new THREE.MeshStandardMaterial({ 
@@ -111,7 +111,7 @@ export class Environment {
     this.addRoadMarkings(roadLength, roadWidth);
   }
   
-  private addRoadMarkings(roadLength: number, roadWidth: number): void {
+  private addRoadMarkings(roadLength: number, _roadWidth: number): void {
     // Create dashed line for road center
     const markingMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
     

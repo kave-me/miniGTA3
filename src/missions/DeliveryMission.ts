@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { Mission } from './Mission';
 import { Player } from '../Player';
 import { InputManager } from '../InputManager';
-import { HumanAnimationState } from '../models/HumanModel';
 
 /**
  * DeliveryMission is a classic GTA3-style mission where the player
@@ -94,7 +93,7 @@ export class DeliveryMission extends Mission {
   /**
    * Update the delivery mission
    */
-  public update(deltaTime: number): void {
+  public update(): void {
     if (!this.isActive || this.isComplete || this.isFailed) return;
     
     // Check for mission failure (time limit)
