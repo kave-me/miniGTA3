@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="500" height="200">
+  <!-- Background shape -->
+  <rect x="10" y="40" width="480" height="120" rx="20" fill="#222" />
+  
+  <!-- Main text -->
+  <text x="250" y="120" font-family="Arial Black, sans-serif" font-size="70" font-weight="bold" text-anchor="middle" fill="#fff">
+    MiniGTA3
+  </text>
+  
+  <!-- Decorative elements -->
+  <rect x="20" y="50" width="10" height="100" fill="#ff0000" />
+  <rect x="470" y="50" width="10" height="100" fill="#ff0000" />
+  
+  <!-- Subtitle -->
+  <text x="250" y="150" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#aaa">
+    Liberty City Awaits
+  </text>
+</svg>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <mesh type="box" width="0.5" height="1.8" depth="0.3">
+    <material color="#2222ee"/>
+  </mesh>
+  <animations>
+    <animation name="idle" duration="1.0">
+      <keyframe time="0" position="0 0 0"/>
+      <keyframe time="1" position="0 0 0"/>
+    </animation>
+    <animation name="walk" duration="1.0">
+      <keyframe time="0" rotation="0 0 0"/>
+      <keyframe time="0.5" rotation="30 0 0"/>
+      <keyframe time="1" rotation="0 0 0"/>
+    </animation>
+  </animations>
+</model>
