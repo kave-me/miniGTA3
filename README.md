@@ -1,7 +1,13 @@
+# MiniGTA3
+
+
 <p align="center">
   <img src="./readme/logo.svg" alt="MiniGTA3 Logo" width="400">
 </p>
-# MiniGTA3
+
+
+
+
 
 <p align="center">
   <img src="./readme/image.png" alt="MiniGTA3 Screenshot" width="800">
