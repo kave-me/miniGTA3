@@ -13,7 +13,7 @@
   <img src="./readme/intro-screen.svg" alt="MiniGTA3 Intro Screen" width="800">
 </p>
 
-A lightweight reimagining of GTA3 that captures the essence of the original game in a modern, web-based implementation. MiniGTA3 features third-person gameplay, vehicle mechanics, and an open-world environment built with TypeScript and Three.js.
+MiniGTA3 is an experimental project by Vibe Coding that leverages Clause-3.7. It offers third-person gameplay, drivable vehicles, and an open-world experience, all developed using TypeScript and Three.js.
 
 ## 🎮 Features
 
@@ -70,70 +70,3 @@ npm run build
 # Preview the production build locally
 npm run preview
 ```
-
-## 🔧 Technical Implementation
-
-MiniGTA3 is built using modern web technologies:
-
-- **TypeScript**: For type-safe, maintainable code
-- **Three.js**: For 3D rendering and physics
-- **Vite**: For fast development and optimized builds
-
-The codebase is organized into several key components:
-
-- **Game**: Main game loop and initialization
-- **Player**: Player character and controls
-- **Vehicle**: Vehicle mechanics and physics
-- **Environment**: World, buildings, and collision objects
-- **CameraController**: Third-person camera system
-- **InputManager**: Keyboard and mouse input handling
-- **MissionManager**: Mission system and objectives
-- **PedestrianManager**: NPC behavior and AI
-
-## 🛣️ Roadmap
-
-- Add more vehicle types with different handling characteristics
-- Expand the mission system with more complex objectives
-- Improve physics and collision detection
-- Add more sound effects and music
-- Implement a more detailed city layout with different districts
-- Add weather effects
-- Implement a save/load system
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgements
-
-- Inspired by the original Grand Theft Auto III by Rockstar Games
-- Built using the re3 project structure as reference
-- Uses Three.js for 3D rendering
-- Special thanks to all contributors who have helped with the project
-
-```bash
-npm run build
-```
-
-## Controls
-
-- W: Move forward
-- S: Move backward
-- A: Strafe left
-- D: Strafe right
-- Mouse: Rotate camera
-
-## Project Structure
-
-- `src/`: Source code
-  - `main.ts`: Entry point
-  - `Game.ts`: Core game loop and state management
-  - `Player.ts`: Player movement and collision detection
-  - `CameraController.ts`: Third-person camera behavior
-  - `Environment.ts`: Terrain and buildings
-- `public/`: Static assets
-- `dist/`: Build output
-
-## Inspiration
-
-This project is inspired by the re3 repository but with a limited scope to ensure the project remains small and runs reliably in modern browsers.
